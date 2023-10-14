@@ -6,11 +6,13 @@ public class Player : MonoBehaviour {
     public float speed;
     Rigidbody2D rigidbody;
     private Vector2 direzioneMossa;
+    private Animator anim;
 
     // Start is called before the first frame update
     void Start()
     {
         rigidbody = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
     }
 
     void InputProc()
@@ -20,6 +22,15 @@ public class Player : MonoBehaviour {
 
         direzioneMossa = new Vector2(orizzontale, verticale).normalized;
 
+        if(direzioneMossa.x > 0 || direzioneMossa.y > 0 ){
+            anim.SetBool("running", true);
+        }
+        else if(direzioneMossa.x < 0){
+            anim.SetBool("running", true);
+        }
+        else{
+            anim.SetBool("running", false);
+        }
     }
 
     void Move()
