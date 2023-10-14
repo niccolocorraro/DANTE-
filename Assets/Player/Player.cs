@@ -15,8 +15,8 @@ public class Player : MonoBehaviour {
 
     void InputProc()
     {
-        float orizzontale = Input.GetAxis("Horizontal");
-        float verticale = Input.GetAxis("Vertical");
+        float orizzontale = Input.GetAxisRaw("Horizontal");
+        float verticale = Input.GetAxisRaw("Vertical");
 
         direzioneMossa = new Vector2(orizzontale, verticale).normalized;
 
