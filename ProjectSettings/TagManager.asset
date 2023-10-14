@@ -41,3 +41,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Pavimento
+    uniqueID: 437613609
+    locked: 0
+  - name: Muri
+    uniqueID: 147102647
+    locked: 0
+  - name: Porta
+    uniqueID: 2811757507
+    locked: 0
+  - name: Giocatore
+    uniqueID: 388527485
+    locked: 0
