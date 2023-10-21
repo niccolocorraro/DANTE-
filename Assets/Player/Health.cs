@@ -3,20 +3,34 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PlayerLife : MonoBehaviour
+public class Health : MonoBehaviour
 {
     private Animator anim;
     private Rigidbody2D rb;
+    [SerializeField] private float startingHealth;
+    public float currentHealth{ get; private set; }
+    private bool dead;
 
     private void Start()
     {
+        currentHealth = startingHealth;
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
     }
 
     private void OnCollisionEnter2D(Collision2D collision){
         if(collision.gameObject.CompareTag("Enemy")){
-            Die();
+
+            currentHealth = Mathf.Clamp(currentHealth - 1, 0, startingHealth);
+
+            if(currentHealth > 0){
+                currentHealth = currentHealth-1;
+                anim.SetTrigger("hurtTrigger");
+            }
+            else{
+                Die();
+            }
+            
         }
     }
 
@@ -31,4 +45,6 @@ public class PlayerLife : MonoBehaviour
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+
+  
 }
