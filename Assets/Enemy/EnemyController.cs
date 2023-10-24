@@ -34,6 +34,7 @@ public class NewBehaviourScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0f);
         switch(currState)
         {
             case EnemyState.Wander:
@@ -82,7 +83,6 @@ public class NewBehaviourScript : MonoBehaviour
         if(!chooseDir)
         {
             StartCoroutine(ChooseDirection());
-
         }
         transform.position += transform.right * speed * Time.deltaTime;
         if(IsPlayerInRange(range))
