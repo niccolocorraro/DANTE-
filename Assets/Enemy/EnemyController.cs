@@ -53,7 +53,7 @@ public class NewBehaviourScript : MonoBehaviour
                 Attack();
             break;
         }
-        if(IsPlayerInRange(range)&&currState!=EnemyState.Die)
+        if(IsPlayerInRange(range) && currState!=EnemyState.Die)
         {
             currState = EnemyState.Follow;
         } 
@@ -105,7 +105,8 @@ public class NewBehaviourScript : MonoBehaviour
         if(!coolDownAttack)
         {
             GameController.DamagePlayer(1);
-            StartCoroutine(CoolDown());
+            rigidbody2d.velocity = Vector2.zero;
+            _ = StartCoroutine(CoolDown());
         }
     }
 
