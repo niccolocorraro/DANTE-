@@ -39,29 +39,29 @@ public class NewBehaviourScript : MonoBehaviour
     void Update()
     {
         transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0f);
-        switch(currState)
+        switch (currState)
         {
             case EnemyState.Wander:
                 Wander();
-            break;
+                break;
             case EnemyState.Follow:
                 Follow();
-            break;
+                break;
             case EnemyState.Die:
-            break;
+                break;
             case EnemyState.Attack:
                 Attack();
-            break;
+                break;
         }
-        if(IsPlayerInRange(range)&&currState!=EnemyState.Die)
+        if (IsPlayerInRange(range) && currState != EnemyState.Die)
         {
             currState = EnemyState.Follow;
-        } 
-        else if(!IsPlayerInRange(range) && currState!= EnemyState.Die)
+        }
+        else if (!IsPlayerInRange(range) && currState != EnemyState.Die)
         {
             currState = EnemyState.Wander;
         }
-        if(Vector3.Distance(transform.position, player.transform.position) <= attackRange) 
+        if (Vector3.Distance(transform.position, player.transform.position) <= attackRange)
         {
             currState = EnemyState.Attack;
         }
@@ -76,7 +76,7 @@ public class NewBehaviourScript : MonoBehaviour
     {
         chooseDir = true;
         yield return new WaitForSeconds(Random.Range(2f, 8f));
-        randomDir = new Vector3(0,0, Random.Range(0, 360));
+        randomDir = new Vector3(0, 0, Random.Range(0, 360));
         Quaternion nextRotation = Quaternion.Euler(randomDir);
         transform.rotation = Quaternion.Lerp(transform.rotation, nextRotation, Random.Range(0.5f, 2.5f));
         chooseDir = false;
@@ -84,12 +84,12 @@ public class NewBehaviourScript : MonoBehaviour
 
     void Wander()
     {
-        if(!chooseDir)
+        if (!chooseDir)
         {
             StartCoroutine(ChooseDirection());
         }
         transform.position += transform.right * speed * Time.deltaTime;
-        if(IsPlayerInRange(range))
+        if (IsPlayerInRange(range))
         {
             currState = EnemyState.Follow;
         }
@@ -97,15 +97,15 @@ public class NewBehaviourScript : MonoBehaviour
 
     void Follow()
     {
-        transform.position = Vector2.MoveTowards(transform.position, player.transform.position, speed * Time.deltaTime); 
+        transform.position = Vector2.MoveTowards(transform.position, player.transform.position, speed * Time.deltaTime);
     }
 
     void Attack()
     {
-        if(!coolDownAttack)
+        if (!coolDownAttack)
         {
             GameController.DamagePlayer(1);
-            StartCoroutine(CoolDown());
+            _ = StartCoroutine(CoolDown());
         }
     }
 
