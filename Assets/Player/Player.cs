@@ -35,16 +35,12 @@ public class Player : MonoBehaviour {
 
     }
 
-    void FixedUpdate()
-    {
-        Move();
-    }
     // Update is called once per frame
     void Update()
     {
         transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0f);
         InputProc();
-
+        Move();
     }
 
     private void UpdateAnimationUpdate(){
