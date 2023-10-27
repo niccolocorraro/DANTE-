@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.U2D;
 
 public enum EnemyState
 {
@@ -24,11 +25,14 @@ public class NewBehaviourScript : MonoBehaviour
     private bool dead = false;
     private bool coolDownAttack = false;
     private Vector3 randomDir;
+    private SpriteRenderer sprite;
+
 
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
+        sprite = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -116,4 +120,18 @@ public class NewBehaviourScript : MonoBehaviour
     {
 
     }
+
+    private void UpdateAnimationUpdate()
+    {
+
+        if (transform.position.x > 0)
+        {
+            sprite.flipX = false;
+        }
+        else if (transform.position.x < 0)
+        {
+            sprite.flipX = true;
+        }
+    }
+
 }
