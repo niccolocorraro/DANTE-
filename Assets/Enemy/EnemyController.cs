@@ -21,6 +21,7 @@ public class NewBehaviourScript : MonoBehaviour
     public float speed;
     public float attackRange;
     public float coolDown;
+    private float prevX;
     private bool chooseDir = false;
     private bool dead = false;
     private bool coolDownAttack = false;
@@ -33,11 +34,13 @@ public class NewBehaviourScript : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player");
         sprite = GetComponent<SpriteRenderer>();
+        prevX = transform.position.x;
     }
 
     // Update is called once per frame
     void Update()
     {
+        prevX = transform.position.x;
         transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0f);
         switch (currState)
         {
@@ -65,6 +68,8 @@ public class NewBehaviourScript : MonoBehaviour
         {
             currState = EnemyState.Attack;
         }
+
+        UpdateAnimationUpdate();
     }
 
     private bool IsPlayerInRange(float range)
@@ -123,12 +128,13 @@ public class NewBehaviourScript : MonoBehaviour
 
     private void UpdateAnimationUpdate()
     {
+        
 
-        if (transform.position.x > 0)
+        if(transform.position.x >= prevX)
         {
             sprite.flipX = false;
-        }
-        else if (transform.position.x < 0)
+        } 
+        else
         {
             sprite.flipX = true;
         }
