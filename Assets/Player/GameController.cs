@@ -39,6 +39,10 @@ public class GameController : MonoBehaviour
     void Update()
     {
         healthText.text = "Health: " +  health;
+         if(health<= 0){
+            // funziona quasi , non so perche si blocca
+            KillPlayer();
+        }
     }
 
     public static void DamagePlayer(int damage) {
@@ -47,11 +51,8 @@ public class GameController : MonoBehaviour
         health -= damage;
         player.anim.SetTrigger("hurtTrigger");
         
-
-        if(Health==0){      //non so perché qua con la maiuscola
-            KillPlayer(); // da correggere ancoras
-
-        }
+     
+       
     }
 
     public static void HealPlayer(int healAmount) {
@@ -63,4 +64,6 @@ public class GameController : MonoBehaviour
       player.anim.SetTrigger("deathTrigger");
 
     }
+
+
 }
