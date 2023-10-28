@@ -4,24 +4,28 @@ using UnityEngine;
 
 public class Stanza : MonoBehaviour
 {
-
+    public string nome;
     public int larghezza;
     public int altezza;
-    public int x;
-    public int y;
+    public int X;
+    public int Y;
 
 
     // Start is called before the first frame update
     void Start()
     {
         
-        if(GestioneStanze.instance == null)
+        if(GestoreStanze.instance == null)
         {
             Debug.Log("Errore di inizializzazione");
             return;
         }
 
+        GestoreStanze.instance.SettaStanzaInGrid(this);
+
     }
+
+
 
     void OnDrawGizmos()
     {
@@ -32,7 +36,7 @@ public class Stanza : MonoBehaviour
     public Vector3 GetStanzaCentro()
     {
 
-        return new Vector3(x * altezza, y * larghezza);
+        return new Vector3(X * altezza, Y * larghezza);
 
     }
 

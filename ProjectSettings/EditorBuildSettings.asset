@@ -4,7 +4,16 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/InfernoMain.unity
+    guid: 738aa6e31578826409628ef91f9b9e3e
+  - enabled: 1
+    path: Assets/Scenes/StanzeDungeon/InfernoEmpty.unity
+    guid: 7715883c384956e46b6b2d2084167d53
+  - enabled: 1
+    path: Assets/Scenes/StanzeDungeon/InfernoStart.unity
+    guid: c850ee8c3b14cc8459e7e186857cf567
   m_configObjects:
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: ac42c8bca7800e943998319b4e435003,
       type: 2}
