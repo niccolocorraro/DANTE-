@@ -8,10 +8,11 @@ public class GameController : MonoBehaviour
 {
 
     public static GameController instance;
-
+    private static Player player;
     private static float health = 3;
     private static int maxHealth = 3;
     private static float moveSpeed = 5f;
+    private Animator anim;
     
 
     public static float Health { get => health; set => health = value; } 
@@ -25,7 +26,13 @@ public class GameController : MonoBehaviour
         if(instance == null)
         {
             instance = this;
+            player = FindObjectOfType<Player>(); // Trova l'oggetto Player e assegnalo al riferimento statico
+
         }
+    }
+
+    private void Start(){
+        anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -35,17 +42,25 @@ public class GameController : MonoBehaviour
     }
 
     public static void DamagePlayer(int damage) {
+        
+       
         health -= damage;
-        if(Health<=0){                                   //non so perché qua con la maiuscola
-            KillPlayer();
+        player.anim.SetTrigger("hurtTrigger");
+        
+
+        if(Health==0){      //non so perché qua con la maiuscola
+            KillPlayer(); // da correggere ancoras
+
         }
     }
 
     public static void HealPlayer(int healAmount) {
         health = Mathf.Min(maxHealth, health + healAmount);
+
     }
 
     public static void KillPlayer() {
-         
+      player.anim.SetTrigger("deathTrigger");
+
     }
 }

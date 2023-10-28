@@ -6,8 +6,10 @@ public class Player : MonoBehaviour {
     public float speed;
     Rigidbody2D rigidbody;
     private Vector2 direzioneMossa;
-    private Animator anim;
+    public Animator anim;
     private SpriteRenderer sprite;
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -45,7 +47,7 @@ public class Player : MonoBehaviour {
 
     private void UpdateAnimationUpdate(){
         
-          if(direzioneMossa.x > 0){
+        if(direzioneMossa.x > 0){
             anim.SetBool("running", true);
             sprite.flipX = false;
         }
@@ -56,6 +58,8 @@ public class Player : MonoBehaviour {
         else{
             anim.SetBool("running", false);
         }
+        
+    
 
 
     }
