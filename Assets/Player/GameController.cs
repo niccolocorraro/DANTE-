@@ -9,15 +9,14 @@ public class GameController : MonoBehaviour
 
     public static GameController instance;
 
-    private static float health = 10;
-    private static int maxHealth = 10;
+    private static float health = 3;
+    private static int maxHealth = 3;
     private static float moveSpeed = 5f;
-    private static float fireRate = 1f;
+    
 
     public static float Health { get => health; set => health = value; } 
     public static int MaxHealth { get => maxHealth; set => maxHealth = value; }
     public static float MoveSpeed { get => moveSpeed; set => moveSpeed = value; }
-    public static float FireRate { get =>  fireRate; set => fireRate = value; }
     public TextMeshProUGUI healthText;
 
     // Start is called before the first frame update
