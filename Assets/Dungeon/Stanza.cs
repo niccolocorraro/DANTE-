@@ -36,8 +36,16 @@ public class Stanza : MonoBehaviour
     public Vector3 GetStanzaCentro()
     {
 
-        return new Vector3(X * altezza, Y * larghezza);
+        return new Vector3(X * larghezza, Y * altezza, 0);
 
+    }
+
+    void OnTriggerEnter2D(Collider2D c)
+    {
+        if (c.tag == "Player")
+        {
+            GestoreStanze.instance.CameraEnterRoom(this);
+        }
     }
 
     // Update is called once per frame

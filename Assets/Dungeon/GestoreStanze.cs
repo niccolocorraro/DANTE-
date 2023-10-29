@@ -18,6 +18,8 @@ public class GestoreStanze : MonoBehaviour
 
     infoStanza infoStanzaCorr;
 
+    Stanza stanzaCorrente;
+
     Queue<infoStanza> RoomQueueLoader = new Queue<infoStanza>();
 
     public List<Stanza> stanzeCaricate = new List<Stanza>();
@@ -32,7 +34,7 @@ public class GestoreStanze : MonoBehaviour
     void Start()
     {
         caricaStanza("Start", 0, 0);
-        caricaStanza("Empty", 0, -1);
+        caricaStanza("Empty", 0, 1);
     }
 
     void Update()
@@ -97,6 +99,19 @@ public class GestoreStanze : MonoBehaviour
         stanza.transform.parent = transform;
 
         isRoomLoaded = true;
+        if(stanzeCaricate.Count == 0)
+        {
+            CameraController.instance.stanzaCorrente = stanza;
+        }
+
         stanzeCaricate.Add(stanza);
+    }
+
+    public void CameraEnterRoom( Stanza stanza)
+    {
+
+        CameraController.instance.stanzaCorrente = stanza;
+        stanzaCorrente = stanza;
+
     }
 }
