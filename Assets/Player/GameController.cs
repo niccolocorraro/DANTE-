@@ -9,12 +9,12 @@ public class GameController : MonoBehaviour
 
     public static GameController instance;
     private static Player player;
-    private static float health = 3;
+    public static float health = 3;
     private static int maxHealth = 3;
     private static float moveSpeed = 5f;
     private Animator anim;
+    private static Rigidbody2D rb;
     
-
     public static float Health { get => health; set => health = value; } 
     public static int MaxHealth { get => maxHealth; set => maxHealth = value; }
     public static float MoveSpeed { get => moveSpeed; set => moveSpeed = value; }
@@ -27,32 +27,36 @@ public class GameController : MonoBehaviour
         {
             instance = this;
             player = FindObjectOfType<Player>(); // Trova l'oggetto Player e assegnalo al riferimento statico
-
+           
         }
     }
 
     private void Start(){
         anim = GetComponent<Animator>();
+        rb = player.GetComponent<Rigidbody2D>();
+       
     }
 
     // Update is called once per frame
     void Update()
     {
         healthText.text = "Health: " +  health;
-         if(health<= 0){
-            // funziona quasi , non so perche si blocca
-            KillPlayer();
-        }
+         
     }
 
+    
+
     public static void DamagePlayer(int damage) {
+    
+        if(health > 0){
+            health -= damage;
+            player.anim.SetTrigger("hurtTrigger");
+        }
         
-       
-        health -= damage;
-        player.anim.SetTrigger("hurtTrigger");
+        if(health == 0 ){
+            KillPlayer();
         
-     
-       
+        }   
     }
 
     public static void HealPlayer(int healAmount) {
@@ -62,6 +66,8 @@ public class GameController : MonoBehaviour
 
     public static void KillPlayer() {
       player.anim.SetTrigger("deathTrigger");
+      rb.bodyType = RigidbodyType2D.Static;
+      
 
     }
 

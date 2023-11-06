@@ -107,7 +107,7 @@ public class NewBehaviourScript : MonoBehaviour
 
     void Attack()
     {
-        if (!coolDownAttack)
+        if (!coolDownAttack )
         {
             GameController.DamagePlayer(1);
             _ = StartCoroutine(CoolDown());
