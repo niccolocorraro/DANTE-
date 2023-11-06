@@ -33,8 +33,8 @@ public class GestoreStanze : MonoBehaviour
 
     void Start()
     {
-        caricaStanza("Start", 0, 0);
-        caricaStanza("Empty", 0, 1);
+        //caricaStanza("Start", 0, 0);
+        //caricaStanza("Empty", 0, 1);
     }
 
     void Update()
