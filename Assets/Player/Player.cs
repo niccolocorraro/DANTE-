@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour {
     public float speed;
@@ -62,6 +63,11 @@ public class Player : MonoBehaviour {
     
 
 
+    }
+
+      private void RestartLevel(){
+
+       GameController.riparti();
     }
 
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class GameController : MonoBehaviour
     private static float moveSpeed = 5f;
     private Animator anim;
     private static Rigidbody2D rb;
+
+    public static bool morto;
     
     public static float Health { get => health; set => health = value; } 
     public static int MaxHealth { get => maxHealth; set => maxHealth = value; }
@@ -27,7 +30,7 @@ public class GameController : MonoBehaviour
         {
             instance = this;
             player = FindObjectOfType<Player>(); // Trova l'oggetto Player e assegnalo al riferimento statico
-           
+            morto = false;
         }
     }
 
@@ -53,9 +56,9 @@ public class GameController : MonoBehaviour
             player.anim.SetTrigger("hurtTrigger");
         }
         
-        if(health == 0 ){
+        if(health == 0 && !morto){
             KillPlayer();
-        
+
         }   
     }
 
@@ -67,8 +70,13 @@ public class GameController : MonoBehaviour
     public static void KillPlayer() {
       player.anim.SetTrigger("deathTrigger");
       rb.bodyType = RigidbodyType2D.Static;
-      
+      morto  =true;
 
+    }
+
+     public static void riparti(){
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
 
