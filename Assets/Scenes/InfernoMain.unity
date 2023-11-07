@@ -866,6 +866,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 10
+  rigidbody: {fileID: 0}
   anim: {fileID: 0}
 --- !u!95 &1523323378
 Animator:
@@ -1097,6 +1098,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eacc278dcd1dc2445bc853f0a9561642, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nomeLivelloCorrente: Inferno
   stanzeCaricate:
   - {fileID: 0}
   - {fileID: 0}

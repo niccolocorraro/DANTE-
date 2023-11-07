@@ -9,6 +9,7 @@ public class Stanza : MonoBehaviour
     public int altezza;
     public int X;
     public int Y;
+    public bool isVincente = false;
 
 
     // Start is called before the first frame update

@@ -14,7 +14,7 @@ public class GestoreStanze : MonoBehaviour
 {
     public static GestoreStanze instance;
 
-    string nomeLivelloCorrente = "Inferno";
+    public string nomeLivelloCorrente = "Inferno";
 
     infoStanza infoStanzaCorr;
 
@@ -26,20 +26,23 @@ public class GestoreStanze : MonoBehaviour
 
     bool isRoomLoaded = false;
 
+
+
     void Awake()
     {
         instance = this;
     }
 
-    void Start()
+    private void Start()
     {
-        //caricaStanza("Start", 0, 0);
-        //caricaStanza("Empty", 0, 1);
+        
     }
+
 
     void Update()
     {
         AggiornaCodaStanze();
+
     }
 
     void AggiornaCodaStanze()
@@ -88,23 +91,33 @@ public class GestoreStanze : MonoBehaviour
 
     public void SettaStanzaInGrid(Stanza stanza)
     {
-        stanza.transform.position = new Vector3(
-            infoStanzaCorr.X * stanza.larghezza,
-            infoStanzaCorr.Y * stanza.altezza,
-            0);
-
-        stanza.X = infoStanzaCorr.X;
-        stanza.Y = infoStanzaCorr.Y;
-        stanza.nome = nomeLivelloCorrente + " " + infoStanzaCorr.nome + "(" + stanza.X + ";" + stanza.Y + ")";
-        stanza.transform.parent = transform;
-
-        isRoomLoaded = true;
-        if(stanzeCaricate.Count == 0)
+        if (!doesStanzaExist(infoStanzaCorr.X, infoStanzaCorr.Y))
         {
-            CameraController.instance.stanzaCorrente = stanza;
+            stanza.transform.position = new Vector3(
+               infoStanzaCorr.X * stanza.larghezza,
+               infoStanzaCorr.Y * stanza.altezza,
+               0);
+
+            stanza.X = infoStanzaCorr.X;
+            stanza.Y = infoStanzaCorr.Y;
+            stanza.nome = nomeLivelloCorrente + " " + infoStanzaCorr.nome + "(" + stanza.X + ";" + stanza.Y + ")";
+            stanza.transform.parent = transform;
+
+            isRoomLoaded = true;
+            if (stanzeCaricate.Count == 0)
+            {
+                CameraController.instance.stanzaCorrente = stanza;
+            }
+
+            stanzeCaricate.Add(stanza);
+        }
+        else
+        {
+            Destroy(stanza.gameObject);
+            isRoomLoaded = true; 
+
         }
 
-        stanzeCaricate.Add(stanza);
     }
 
     public void CameraEnterRoom( Stanza stanza)
