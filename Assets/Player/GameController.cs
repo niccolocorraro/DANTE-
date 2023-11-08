@@ -15,8 +15,9 @@ public class GameController : MonoBehaviour
     private static float moveSpeed = 5f;
     private Animator anim;
     private static Rigidbody2D rb;
-
     public static bool morto;
+    public bool chiaveCheck;
+
     
     public static float Health { get => health; set => health = value; } 
     public static int MaxHealth { get => maxHealth; set => maxHealth = value; }
@@ -31,6 +32,7 @@ public class GameController : MonoBehaviour
             instance = this;
             player = FindObjectOfType<Player>(); // Trova l'oggetto Player e assegnalo al riferimento statico
             morto = false;
+            chiaveCheck = false;
         }
     }
 

@@ -8,20 +8,25 @@ public class GeneratoreDungeon : MonoBehaviour
 {
     public DungeonGenerationData dungeonGenerationData;
     private List<Vector2Int> stanzeDungeon;
+  
     
 
     private void Awake()
     {
         stanzeDungeon = DungeonCrawlerController.creaDungeon(dungeonGenerationData);
         spawnStanze(stanzeDungeon);
-        StartCoroutine(attivaStanzaVincente());
+        StartCoroutine(attivaVincente());
+
 
     }
 
-    IEnumerator attivaStanzaVincente()
+    IEnumerator attivaVincente()
     {
         yield return new WaitForSeconds(3.0f);
         GestoreStanze.instance.stanzeCaricate.Last().isVincente = true;
+        
+        chiaveGen.instance.SpawnObject(GestoreStanze.instance.stanzeCaricate[GestoreStanze.instance.stanzeCaricate.Count - 2].GetStanzaCentro());
+         
     }
 
     private void spawnStanze(IEnumerable<Vector2Int> stanze)
