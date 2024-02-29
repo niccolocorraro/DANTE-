@@ -23,7 +23,7 @@ public class NewBehaviourScript : MonoBehaviour
     public float coolDown;
     private float prevX;
     private bool chooseDir = false;
-    private bool dead = false;
+    //private bool dead = false;
     private bool coolDownAttack = false;
     private Vector3 randomDir;
     private SpriteRenderer sprite;
@@ -93,12 +93,28 @@ public class NewBehaviourScript : MonoBehaviour
         {
             StartCoroutine(ChooseDirection());
         }
-        transform.position += transform.right * speed * Time.deltaTime;
+        StartCoroutine(WaitAndMove());
+    }
+
+    IEnumerator WaitAndMove()
+    {
+        // Aspetta un periodo di tempo casuale prima del prossimo movimento
+        yield return new WaitForSeconds(Random.Range(1f, 1.5f));
+
+        Vector2 randomDirection = Random.insideUnitCircle.normalized;
+        transform.position += (Vector3)randomDirection * speed * Time.deltaTime;
+
         if (IsPlayerInRange(range))
         {
             currState = EnemyState.Follow;
+            yield break;
         }
+
+        // Richiama ricorsivamente la coroutine per un nuovo movimento casuale dopo il ritardo
+        StartCoroutine(WaitAndMove());
     }
+
+
 
     void Follow()
     {
