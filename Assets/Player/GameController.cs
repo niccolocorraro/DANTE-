@@ -76,11 +76,9 @@ public class GameController : MonoBehaviour
       rb.bodyType = RigidbodyType2D.Static;
       morto  =true;
       OnPlayerDeath?.Invoke();
-
     }
 
      public static void riparti(){
-        health = 3;
         
        // SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }

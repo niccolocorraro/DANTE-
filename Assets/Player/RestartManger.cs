@@ -22,6 +22,7 @@ public class RestartManger : MonoBehaviour
 
    public void RestartLevel(){
     SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    GameController.health = 3;
    }
 
    public void GoToMainMenu(){
