@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System;
 
 public class GameController : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class GameController : MonoBehaviour
     private static Rigidbody2D rb;
     public static bool morto;
     public bool chiaveCheck;
+    public static event Action OnPlayerDeath;
 
     
     public static float Health { get => health; set => health = value; } 
@@ -60,7 +62,7 @@ public class GameController : MonoBehaviour
         
         if(health == 0 && !morto){
             KillPlayer();
-
+        
         }   
     }
 
@@ -73,13 +75,17 @@ public class GameController : MonoBehaviour
       player.anim.SetTrigger("deathTrigger");
       rb.bodyType = RigidbodyType2D.Static;
       morto  =true;
+      OnPlayerDeath?.Invoke();
 
     }
 
      public static void riparti(){
-
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        health = 3;
+        
+       // SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+
+
 
 
 }
