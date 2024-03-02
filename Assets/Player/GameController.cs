@@ -34,6 +34,7 @@ public class GameController : MonoBehaviour
             instance = this;
             player = FindObjectOfType<Player>(); // Trova l'oggetto Player e assegnalo al riferimento statico
             morto = false;
+            health = 3;
             chiaveCheck = false;
         }
     }
@@ -57,10 +58,12 @@ public class GameController : MonoBehaviour
     
         if(health > 0){
             health -= damage;
+            AudioManager.instance.PlaySfx("Damage");
             player.anim.SetTrigger("hurtTrigger");
         }
         
         if(health == 0 && !morto){
+            AudioManager.instance.PlaySfx("GameOver");
             KillPlayer();
         
         }   
