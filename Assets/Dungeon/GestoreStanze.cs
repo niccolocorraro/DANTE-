@@ -63,6 +63,7 @@ public class GestoreStanze : MonoBehaviour
         return stanzeCaricate.Exists(item => item != null && item.X == x && item.Y == y);
     }
 
+
     public void caricaStanza(string nome, int x, int y)
     {
         if (!doesStanzaExist(x, y))

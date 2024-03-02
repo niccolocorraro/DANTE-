@@ -11,22 +11,73 @@ public class Stanza : MonoBehaviour
     public int Y;
     public bool isVincente = false;
 
+   
+
+    public Porta[] porte;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        
         if(GestoreStanze.instance == null)
         {
             Debug.Log("Errore di inizializzazione");
             return;
-        }
-
+        }    
         GestoreStanze.instance.SettaStanzaInGrid(this);
-
+        porte = GetComponentsInChildren<Porta>();
+    }
+     
+    public  void RimuoviPorte()
+    {
+        foreach(Porta p in this.porte)
+        {
+            switch (p.tipoPorta)
+            {
+                case Porta.TipoPorta.dx:
+                if(getRight())
+                   p.gameObject.GetComponent<BoxCollider2D>().enabled = false;
+                   else       
+                   p.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                 break;
+                case Porta.TipoPorta.sx:
+                   if(getLeft())
+                   p.gameObject.GetComponent<BoxCollider2D>().enabled = false;
+                   else       
+                   p.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                   break;
+                case Porta.TipoPorta.up:
+                   if(getAbove())
+                   p.gameObject.GetComponent<BoxCollider2D>().enabled = false;
+                   else       
+                   p.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                   break;
+                case Porta.TipoPorta.dw:
+                    if(getBottom())
+                    p.gameObject.GetComponent<BoxCollider2D>().enabled = false;
+                    else       
+                    p.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                    break;
+            }
+        }
     }
 
-
+    public bool getRight()
+    {
+        return GestoreStanze.instance.doesStanzaExist(X + 1, Y);
+    }
+    public bool getLeft()
+    {
+       return GestoreStanze.instance.doesStanzaExist(X - 1, Y);
+    }
+    public bool getAbove()
+    {
+         return GestoreStanze.instance.doesStanzaExist(X, Y + 1);
+    }
+    public bool getBottom()
+    {
+          return GestoreStanze.instance.doesStanzaExist(X , Y - 1);
+    }
 
     void OnDrawGizmos()
     {
