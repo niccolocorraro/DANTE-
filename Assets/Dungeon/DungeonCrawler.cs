@@ -4,7 +4,7 @@ using UnityEngine;
 
 
 
-public class DungeonCrawler : MonoBehaviour
+public class DungeonCrawler 
 { 
    public Vector2Int Position { get; set; }    
    public DungeonCrawler(Vector2Int startPos)

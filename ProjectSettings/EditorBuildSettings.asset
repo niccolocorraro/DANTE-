@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/StanzeDungeon/InfernoEmpty.unity
     guid: fdf8e4b02a05d874d9db89a3856d8299
+  - enabled: 1
+    path: Assets/Scenes/StanzeDungeon/InfernoProva.unity
+    guid: df9d9f4af4aebac4892ec603eedf3ddf
   m_configObjects:
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: ac42c8bca7800e943998319b4e435003,
       type: 2}

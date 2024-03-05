@@ -39,10 +39,10 @@ public class GeneratoreDungeon : MonoBehaviour
 
     private void spawnStanze(IEnumerable<Vector2Int> stanze)
     {
-        GestoreStanze.instance.caricaStanza("Start", 0, 0);
+        GestoreStanze.instance.caricaStanza("Prova", 0, 0);
         foreach (Vector2Int roomLocation in stanze)
         {
-            GestoreStanze.instance.caricaStanza("Start", roomLocation.x, roomLocation.y);
+            GestoreStanze.instance.caricaStanza("Prova", roomLocation.x, roomLocation.y);
         }
     }
 }
