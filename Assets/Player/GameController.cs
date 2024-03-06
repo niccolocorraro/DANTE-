@@ -18,9 +18,9 @@ public class GameController : MonoBehaviour
     private static Rigidbody2D rb;
     public static bool morto;
     public bool chiaveCheck;
+    public bool isWon;
     public static event Action OnPlayerDeath;
-
-    
+    public GameObject completeLevelUI;
     public static float Health { get => health; set => health = value; } 
     public static int MaxHealth { get => maxHealth; set => maxHealth = value; }
     public static float MoveSpeed { get => moveSpeed; set => moveSpeed = value; }
@@ -48,6 +48,11 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+    
+       if(isWon){
+        completeLevel();
+       }
        // healthText.text = "Health: " +  health;
          
     }
@@ -77,7 +82,7 @@ public class GameController : MonoBehaviour
     public static void KillPlayer() {
       player.anim.SetTrigger("deathTrigger");
       rb.bodyType = RigidbodyType2D.Static;
-      morto  =true;
+      morto =true;
       OnPlayerDeath?.Invoke();
     }
 
@@ -87,6 +92,9 @@ public class GameController : MonoBehaviour
     }
 
 
-
+    public void completeLevel(){
+       completeLevelUI.SetActive(true);
+       rb.bodyType = RigidbodyType2D.Static;
+    }
 
 }
