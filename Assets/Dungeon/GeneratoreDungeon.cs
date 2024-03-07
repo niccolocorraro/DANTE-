@@ -1,13 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random; // Usa il namespace Unity Random
-using System.Linq;
+using System.Linq;   
 
 public class GeneratoreDungeon : MonoBehaviour
 {
     public DungeonGenerationData dungeonGenerationData;
     private List<Vector2Int> stanzeDungeon;
+
+    
+
   
     
 
@@ -32,10 +34,8 @@ public class GeneratoreDungeon : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
         GestoreStanze.instance.stanzeCaricate.Last().isVincente = true;
-
         portaGen.instance.SpawnObject(GestoreStanze.instance.stanzeCaricate.Last().GetStanzaCentro());
-
-        chiaveGen.instance.SpawnObject(GestoreStanze.instance.stanzeCaricate[GestoreStanze.instance.stanzeCaricate.Count - 2].GetStanzaCentro());
+        chiaveGen.instance.SpawnObject(GestoreStanze.instance.stanzeCaricate[Random.Range(2,GestoreStanze.instance.stanzeCaricate.Count() -1)].GetStanzaCentro());
          
     }
 
