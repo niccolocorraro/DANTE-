@@ -51,7 +51,7 @@ public class GameController : MonoBehaviour
 
     
        if(isWon){
-        completeLevel();
+                StartCoroutine(completeLevel());
        }
        // healthText.text = "Health: " +  health;
          
@@ -92,7 +92,9 @@ public class GameController : MonoBehaviour
     }
 
 
-    public void completeLevel(){
+    public IEnumerator completeLevel(){
+
+       yield return new WaitForSeconds(2f);
        completeLevelUI.SetActive(true);
        rb.bodyType = RigidbodyType2D.Static;
     }
