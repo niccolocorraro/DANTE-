@@ -35,7 +35,7 @@ public class GeneratoreDungeon : MonoBehaviour
         yield return new WaitForSeconds(1f);
         GestoreStanze.instance.stanzeCaricate.Last().isVincente = true;
         portaGen.instance.SpawnObject(GestoreStanze.instance.stanzeCaricate.Last().GetStanzaCentro());
-        chiaveGen.instance.SpawnObject(GestoreStanze.instance.stanzeCaricate[Random.Range(2,GestoreStanze.instance.stanzeCaricate.Count() -1)].GetStanzaCentro());
+        chiaveGen.instance.SpawnObject(GestoreStanze.instance.stanzeCaricate[Random.Range(4,GestoreStanze.instance.stanzeCaricate.Count() -2)].GetStanzaCentro());
          
     }
 

@@ -97,7 +97,7 @@ public class GameController : MonoBehaviour
        yield return new WaitForSeconds(2f);
        completeLevelUI.SetActive(true);
        rb.bodyType = RigidbodyType2D.Static;
-       player.gameObject.GetComponent<BoxCollider2D>().enabled = false;
+       player.GetComponent<BoxCollider2D>().enabled = false;
     }
 
 }

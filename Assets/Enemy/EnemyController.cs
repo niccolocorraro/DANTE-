@@ -123,7 +123,7 @@ public class NewBehaviourScript : MonoBehaviour
 
     void Attack()
     {
-        if (!coolDownAttack )
+        if (!coolDownAttack && player.GetComponent<BoxCollider2D>().enabled == true)
         {
             GameController.DamagePlayer(1);
             _ = StartCoroutine(CoolDown());
