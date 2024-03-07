@@ -46,6 +46,9 @@ TagManager:
   - name: Pavimento
     uniqueID: 437613609
     locked: 0
+  - name: Uscita
+    uniqueID: 346865139
+    locked: 0
   - name: Giocatore
     uniqueID: 388527485
     locked: 0
