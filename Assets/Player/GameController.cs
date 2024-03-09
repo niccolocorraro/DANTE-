@@ -21,6 +21,7 @@ public class GameController : MonoBehaviour
     public bool isWon;
     public static event Action OnPlayerDeath;
     public GameObject completeLevelUI;
+    public GameObject loadingUI;
     public static float Health { get => health; set => health = value; } 
     public static int MaxHealth { get => maxHealth; set => maxHealth = value; }
     public static float MoveSpeed { get => moveSpeed; set => moveSpeed = value; }
@@ -42,7 +43,9 @@ public class GameController : MonoBehaviour
     private void Start(){
         anim = GetComponent<Animator>();
         rb = player.GetComponent<Rigidbody2D>();
-       
+        
+
+        caricamento();
     }
 
     // Update is called once per frame
@@ -99,5 +102,13 @@ public class GameController : MonoBehaviour
        rb.bodyType = RigidbodyType2D.Static;
        player.GetComponent<BoxCollider2D>().enabled = false;
     }
+
+    public IEnumerator caricamento(){
+
+       yield return new WaitForSeconds(1f);
+       loadingUI.SetActive(true);
+    }
+
+
 
 }
