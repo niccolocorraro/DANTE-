@@ -10,11 +10,11 @@ public class Stanza : MonoBehaviour
     public int X;
     public int Y;
     public bool isVincente = false;
+    public GameObject enemyPrefab;
 
-   
+    public Rect bounds;
 
     public Porta[] porte;
-
 
     // Start is called before the first frame update
     void Start()
@@ -26,9 +26,12 @@ public class Stanza : MonoBehaviour
         }    
         GestoreStanze.instance.SettaStanzaInGrid(this);
         porte = GetComponentsInChildren<Porta>();
+        bounds = GetRoomBounds();
+
+        StartCoroutine(SpawnEnemies());
     }
-     
-    public  void RimuoviPorte()
+
+    public void RimuoviPorte()
     {
         foreach(Porta p in this.porte)
         {
@@ -82,14 +85,12 @@ public class Stanza : MonoBehaviour
     void OnDrawGizmos()
     {
         Gizmos.color = Color.white;
-        Gizmos.DrawWireCube(transform.position, new Vector3(larghezza, altezza, 0));
+        Gizmos.DrawWireCube(bounds.center, bounds.size);
     }
 
     public Vector3 GetStanzaCentro()
     {
-
         return new Vector3(X * larghezza, Y * altezza, 0);
-
     }
 
     void OnTriggerEnter2D(Collider2D c)
@@ -100,9 +101,56 @@ public class Stanza : MonoBehaviour
         }
     }
 
+    public Rect GetRoomBounds()
+{
+    Vector3 center = GetStanzaCentro();
+    // Scale factor to reduce the size
+    float scaleFactor = 0.75f;
+    
+    // Calculate scaled dimensions
+    float scaledWidth = larghezza * scaleFactor;
+    float scaledHeight = altezza * (scaleFactor - 0.15f);
+    
+    // Return the smaller Rect
+    return new Rect(center.x - scaledWidth / 2, (center.y - scaledHeight / 2) + 0.3f, scaledWidth, scaledHeight);
+}
+
+
+    private IEnumerator SpawnEnemies()
+    {
+        yield return new WaitForSeconds(0f); // Adjust the delay if needed
+
+        
+        if (Random.value <= 0.5f && nome !="Inferno Prova(0;0)")
+        {
+            int enemyCount = Random.Range(1, 3); // Spawn between 1 and 4 enemies
+            for (int i = 0; i < enemyCount; i++)
+            {
+                Vector3 randomPosition = GetRandomPositionInRoom();
+                GameObject enemy = Instantiate(enemyPrefab, randomPosition, Quaternion.identity);
+                NewBehaviourScript enemyScript = enemy.GetComponent<NewBehaviourScript>();
+                if (enemyScript != null)
+                {
+                    enemyScript.room = this;
+                    enemyScript.rect = GetRoomBounds();
+                }
+                
+            }
+        }
+    }   
+
+    private Vector3 GetRandomPositionInRoom()
+    {
+        Rect bounds = GetRoomBounds();
+        float x = Random.Range(bounds.xMin, bounds.xMax);
+        float y = Random.Range(bounds.yMin, bounds.yMax);
+        return new Vector3(x, y, 0);
+    }
+
     // Update is called once per frame
     void Update()
     {
         
     }
+
 }

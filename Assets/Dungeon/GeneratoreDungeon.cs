@@ -5,13 +5,10 @@ using System.Linq;
 
 public class GeneratoreDungeon : MonoBehaviour
 {
+
     public DungeonGenerationData dungeonGenerationData;
     private List<Vector2Int> stanzeDungeon;
 
-    
-
-  
-    
 
     private void Awake()
     {
@@ -36,7 +33,6 @@ public class GeneratoreDungeon : MonoBehaviour
         GestoreStanze.instance.stanzeCaricate.Last().isVincente = true;
         portaGen.instance.SpawnObject(GestoreStanze.instance.stanzeCaricate.Last().GetStanzaCentro());
         chiaveGen.instance.SpawnObject(GestoreStanze.instance.stanzeCaricate[Random.Range(4,GestoreStanze.instance.stanzeCaricate.Count() -2)].GetStanzaCentro());
-         
     }
 
     private void spawnStanze(IEnumerable<Vector2Int> stanze)
@@ -47,4 +43,15 @@ public class GeneratoreDungeon : MonoBehaviour
             GestoreStanze.instance.caricaStanza("Prova", roomLocation.x, roomLocation.y);
         }
     }
+
+
+    private Vector3 GetRandomPositionInRoom(Stanza room)
+    {
+        Rect bounds = room.GetRoomBounds();
+        float x = Random.Range(bounds.xMin , bounds.xMax);
+        float y = Random.Range(bounds.yMin , bounds.yMax);
+        return new Vector3(x, y, 0);
+    }
+
 }
+
