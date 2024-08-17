@@ -1,5 +1,5 @@
 sceneSetups:
-- path: Assets/Scenes/InfernoMain.unity
+- path: Assets/Scenes/Menu/Login/LoginScene.unity
   isLoaded: 1
   isActive: 1
   isSubScene: 0

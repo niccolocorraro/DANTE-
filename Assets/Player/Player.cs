@@ -10,8 +10,6 @@ public class Player : MonoBehaviour {
     public Animator anim;
     private SpriteRenderer sprite;
 
-
-
     // Start is called before the first frame update
     void Start()
     {
@@ -28,49 +26,48 @@ public class Player : MonoBehaviour {
         direzioneMossa = new Vector2(orizzontale, verticale).normalized;
 
         UpdateAnimationUpdate();
-      
     }
 
     void Move()
     {
-
         rigidbody.velocity = new Vector2(direzioneMossa.x * speed, direzioneMossa.y * speed);
-
     }
 
     // Update is called once per frame
     void Update()
     {
+        // Check if input is blocked
+        if (InputManager.instance.IsInputBlocked())
+        {
+            rigidbody.velocity = Vector2.zero;  // Stop the player from moving
+            return;  // Skip the rest of the update to block input
+        }
+
         transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0f);
         InputProc();
         Move();
     }
 
-    private void UpdateAnimationUpdate(){
-        
-        if(direzioneMossa.x > 0){
+    private void UpdateAnimationUpdate()
+    {
+        if (direzioneMossa.x > 0)
+        {
             anim.SetBool("running", true);
             sprite.flipX = false;
         }
-        else if(direzioneMossa.x < 0){
+        else if (direzioneMossa.x < 0)
+        {
             anim.SetBool("running", true);
             sprite.flipX = true;
         }
-        else{
+        else
+        {
             anim.SetBool("running", false);
         }
-        
-    
-
-
     }
 
-      private void RestartLevel(){
-
-       GameController.riparti();
+    private void RestartLevel()
+    {
+        GameController.riparti();
     }
-
 }
-
-
-    

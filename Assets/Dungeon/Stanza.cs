@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+
 
 public class Stanza : MonoBehaviour
 {
@@ -41,25 +43,28 @@ public class Stanza : MonoBehaviour
                 if(getRight())
                    p.gameObject.GetComponent<BoxCollider2D>().enabled = false;
                    else       
-                   p.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                   p.gameObject.GetComponentsInChildren<SpriteRenderer>().ToList().ForEach(sr => sr.enabled = false);
                  break;
                 case Porta.TipoPorta.sx:
                    if(getLeft())
                    p.gameObject.GetComponent<BoxCollider2D>().enabled = false;
                    else       
-                   p.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                   p.gameObject.GetComponentsInChildren<SpriteRenderer>().ToList().ForEach(sr => sr.enabled = false);
+
                    break;
                 case Porta.TipoPorta.up:
                    if(getAbove())
                    p.gameObject.GetComponent<BoxCollider2D>().enabled = false;
                    else       
-                   p.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                   p.gameObject.GetComponentsInChildren<SpriteRenderer>().ToList().ForEach(sr => sr.enabled = false);
+
                    break;
                 case Porta.TipoPorta.dw:
                     if(getBottom())
                     p.gameObject.GetComponent<BoxCollider2D>().enabled = false;
                     else       
-                    p.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                    p.gameObject.GetComponentsInChildren<SpriteRenderer>().ToList().ForEach(sr => sr.enabled = false);
+
                     break;
             }
         }
