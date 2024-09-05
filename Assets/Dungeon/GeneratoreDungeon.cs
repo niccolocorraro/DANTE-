@@ -3,43 +3,129 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
+using System.Threading.Tasks;
+using Firebase.Auth;
+using Firebase.Database;
+using Firebase.Extensions;
 
 public class GeneratoreDungeon : MonoBehaviour
 {
-    public DungeonGenerationData dungeonGenerationData;
-    private List<Vector2Int> stanzeDungeon;
 
+    public static GeneratoreDungeon instance;
     public GameObject loadingScreen;
     public Slider progressBar;
 
-    private void Start()
+    public GameObject portaPrefab;
+    public GameObject chiavePrefab;
+    public GameObject cantoPrefab;
+
+    public CollectableItem collectableSpawned;
+
+    private List<Vector2Int> stanzeDungeon;
+    public FirebaseUser currentUser;
+    public  DatabaseReference databaseReference;
+
+    public UserData userData;
+    public DungeonGenerationData dungeonData;
+
+    void Awake()
     {
+        instance = this;
+    }
+
+    private async void Start()
+    {
+        currentUser = FirebaseAuth.DefaultInstance.CurrentUser;
+        databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
+
         InputManager.instance.BlockInput();  // Block user input at the start
         loadingScreen.SetActive(true);  // Activate the loading screen
 
-        if( GameData.selectedDifficultyData != null)
+        if (currentUser != null)
         {
-        dungeonGenerationData = GameData.selectedDifficultyData;
+            await LoadUserData(currentUser.UserId);
+        }
+        else
+        {
+            Debug.Log("No user is currently authenticated.");
         }
 
-        StartCoroutine(GenerateDungeon());
+        await StartDungeonGeneration(userData.dungeonGenerationData);
     }
 
-    private IEnumerator GenerateDungeon()
-    {
-        // Step 1: Generate the dungeon rooms
-        stanzeDungeon = DungeonCrawlerController.creaDungeon(dungeonGenerationData);
-        yield return StartCoroutine(spawnStanze(stanzeDungeon));
-        
-        // Step 2: Handle doors and winning condition
-        yield return StartCoroutine(attivaVincente());
-        yield return StartCoroutine(gestisciPorte());
+    private async Task LoadUserData(string userId)
+{
+    DatabaseReference userRef = databaseReference.Child($"users/{userId}");
 
-        // Step 3: Finalize loading
+    DataSnapshot snapshot = await userRef.GetValueAsync().ContinueWith(task =>
+    {
+        if (task.IsFaulted)
+        {
+            Debug.Log("Failed to load user data: " + task.Exception);
+            return null;
+        }
+        return task.Result;
+    });
+
+    if (snapshot != null && snapshot.Exists)
+    {
+        // Load collectables data if it exists
+        if (snapshot.Child("collectables").Exists)
+        {
+            string collectablesJson = snapshot.Child("collectables").GetRawJsonValue();
+            Debug.Log(collectablesJson);
+            userData.collectables = JsonUtility.FromJson<CollectablesData>(collectablesJson);
+            Debug.Log("Loaded collectablesData for the user.");
+        }
+        else
+        {
+            Debug.Log("collectablesData does not exist for this user, initializing with default values.");
+            userData.collectables = new CollectablesData();
+        }
+
+        // Load dungeonGenerationData if it exists
+        if (snapshot.Child("dungeonGenerationData").Exists)
+        {
+            string dungeonJson = snapshot.Child("dungeonGenerationData").GetRawJsonValue();
+            Debug.Log(dungeonJson);
+
+            JsonUtility.FromJsonOverwrite(dungeonJson, dungeonData);
+            userData.dungeonGenerationData = dungeonData;
+            Debug.Log(userData.dungeonGenerationData.ToString());
+            Debug.Log("Loaded dungeonGenerationData for the user.");
+        }
+        else
+        {
+            Debug.Log("dungeonGenerationData does not exist for this user, using default data.");
+        }
+
+        // Load difficulty if it exists
+        if (snapshot.Child("difficulty").Exists)
+        {
+            userData.difficulty = int.Parse(snapshot.Child("difficulty").Value.ToString());
+        }
+        else
+        {
+            Debug.Log("Difficulty level does not exist for this user, setting to default.");
+            userData.difficulty = 0;  // Default to Easy
+        }
+    }
+    else
+    {
+        Debug.LogWarning("No data exists for this user in the database.");
+    }
+}
+
+
+    private async Task StartDungeonGeneration(DungeonGenerationData dungeonGenerationData)
+    {
+        await GenerateDungeon(dungeonGenerationData);
+
+        // Finalize loading
         progressBar.value = 1f;
-        
+
         // Wait a moment to show the completed loading bar
-        yield return new WaitForSeconds(0.5f);
+        await Task.Delay(500);
 
         // Hide the loading screen
         loadingScreen.SetActive(false);
@@ -47,9 +133,72 @@ public class GeneratoreDungeon : MonoBehaviour
         InputManager.instance.UnblockInput();  // Unblock user input after loading is done
     }
 
-    private IEnumerator gestisciPorte()
+    private async Task GenerateDungeon(DungeonGenerationData dungeonGenerationData)
     {
-        yield return new WaitForSeconds(1f);
+        // Step 1: Generate the dungeon rooms
+        stanzeDungeon = DungeonCrawlerController.creaDungeon(dungeonGenerationData);
+        await spawnStanze(stanzeDungeon);
+
+        // Step 2: Spawn collectables
+        await spawnCollectableItem();
+
+        // Step 3: Handle doors and winning condition
+        await attivaVincente();
+        await gestisciPorte();
+    }
+
+    private async Task spawnStanze(IEnumerable<Vector2Int> stanze)
+    {
+        GestoreStanze.instance.caricaStanza("Prova", 0, 0);
+
+        // Calculate the progress increment per room
+        float progressIncrement = 0.4f / stanzeDungeon.Count;
+
+        foreach (Vector2Int roomLocation in stanze)
+        {
+            GestoreStanze.instance.caricaStanza("Prova", roomLocation.x, roomLocation.y);
+
+            // Update progress
+            progressBar.value += progressIncrement;
+
+            // Await a frame to ensure the UI updates
+            await Task.Yield(); // Non-blocking delay that waits for the next frame
+        }
+    }
+
+    private async Task spawnCollectableItem()
+{
+    // Get the correct collectables list based on the selected difficulty
+    List<CollectableItem> selectedCollectablesList = userData.collectables.collectablesByDifficulty[userData.difficulty];
+
+    CollectableItem collectableSpawned = null;
+
+    // Iterate over the selected collectables list to find an item that hasn't been found yet
+    foreach (var item in selectedCollectablesList)
+    {
+        if (!item.isFound)
+        {
+            collectableSpawned = item;
+            break;
+        }
+    }
+
+    if (collectableSpawned != null && stanzeDungeon.Count >= 5)
+    {
+        // Spawn the collectable in a random room
+        await Task.Delay(500);
+        Debug.Log(stanzeDungeon.Count);
+        Vector3 spawnPosition = GetRandomPositionInRoom(GestoreStanze.instance.stanzeCaricate[Random.Range(3, stanzeDungeon.Count - 2)]);
+        Instantiate(cantoPrefab, spawnPosition, Quaternion.identity);
+    }
+
+    await Task.Yield(); // Wait for the next frame to continue
+}
+
+
+    private async Task gestisciPorte()
+    {
+        await Task.Delay(1000); // Wait for 1 second
         foreach (Stanza s in GestoreStanze.instance.stanzeCaricate)
         {
             if (s != null)
@@ -59,27 +208,19 @@ public class GeneratoreDungeon : MonoBehaviour
         progressBar.value += 0.3f;
     }
 
-    private IEnumerator attivaVincente()
+    private async Task attivaVincente()
     {
-        yield return new WaitForSeconds(1f);
+        await Task.Delay(1000); // Wait for 1 second
         GestoreStanze.instance.stanzeCaricate.Last().isVincente = true;
-        portaGen.instance.SpawnObject(GestoreStanze.instance.stanzeCaricate.Last().GetStanzaCentro());
-        chiaveGen.instance.SpawnObject(GestoreStanze.instance.stanzeCaricate[Random.Range(4, GestoreStanze.instance.stanzeCaricate.Count() - 2)].GetStanzaCentro());
-
+        spawnKeyAndDoor();
         // Update progress
         progressBar.value += 0.3f;
     }
 
-    private IEnumerator spawnStanze(IEnumerable<Vector2Int> stanze)
+    private void spawnKeyAndDoor()
     {
-        GestoreStanze.instance.caricaStanza("Prova", 0, 0);
-        foreach (Vector2Int roomLocation in stanze)
-        {
-            GestoreStanze.instance.caricaStanza("Prova", roomLocation.x, roomLocation.y);
-            // Update progress
-            progressBar.value += 0.4f / stanzeDungeon.Count;
-            yield return null; // Wait for a frame to update UI
-        }
+        Instantiate(portaPrefab, GestoreStanze.instance.stanzeCaricate.Last().GetStanzaCentro(), Quaternion.identity);
+        Instantiate(chiavePrefab, GestoreStanze.instance.stanzeCaricate[Random.Range(4, GestoreStanze.instance.stanzeCaricate.Count() - 2)].GetStanzaCentro(), Quaternion.identity);
     }
 
     private Vector3 GetRandomPositionInRoom(Stanza room)

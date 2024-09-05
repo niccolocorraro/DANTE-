@@ -5,11 +5,8 @@ using UnityEngine;
 public class EndTrigger : MonoBehaviour
 {
     public Animator anim;
-    public GameController gameController;
-
     private void Start(){
         anim = GetComponent<Animator>();
-       
     }
     private void OnTriggerEnter2D(Collider2D collision){
         

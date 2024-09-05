@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 941233f1b0b2b774b931477b7b4e66a5, type: 3}
   m_Name: DungeonGenerationData Easy
   m_EditorClassIdentifier: 
-  numeroCammini: 3
-  numeroIterazioniMinime: 4
-  numeroIterazioniMassime: 8
+  numeroCammini: 4
+  numeroIterazioniMinime: 2
+  numeroIterazioniMassime: 4

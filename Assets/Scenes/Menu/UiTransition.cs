@@ -10,17 +10,19 @@ public class UITransition : MonoBehaviour
     public float fadeDuration = 1f;
     public float frameRate = 12f;
     public float delayBetweenElements = 0.2f;
-
     public float waitTransition = 0f;  // Optional delay before starting the transition
 
+    public int hasBeenAnimated;
     private float frameTime;
+
+    
 
     void Start()
     {
         frameTime = 1f / frameRate;
-        foreach (var element in uiElements)
+        for(int i = 1; i < uiElements.Length; i++)
         {
-            element.alpha = 0f;  // Initially invisible
+            uiElements[i].alpha = 0f;  // Initially invisible
         }
     }
 
@@ -56,11 +58,13 @@ public class UITransition : MonoBehaviour
             yield return new WaitForSeconds(waitTime);
         }
 
-        for (int i = 0; i < uiElements.Length; i++)
+        for (int i = hasBeenAnimated; i < uiElements.Length; i++)
         {
             yield return StartCoroutine(FadeInElement(uiElements[i]));
             yield return new WaitForSeconds(delayBetweenElements);
         }
+
+        hasBeenAnimated = 0;
     }
 
     public IEnumerator FadeOutUIElements(float waitTime)

@@ -5,6 +5,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
+using Firebase.Auth;
+using Firebase.Database;
+using Firebase.Extensions;
 
 public class GameController : MonoBehaviour
 {
@@ -19,6 +22,8 @@ public class GameController : MonoBehaviour
     public static bool morto;
     public bool chiaveCheck;
     public bool isWon;
+
+    public bool collectableFound;
     public static event Action OnPlayerDeath;
     public GameObject completeLevelUI;
     public GameObject loadingUI;
@@ -56,22 +61,64 @@ public class GameController : MonoBehaviour
        if(isWon){
                 StartCoroutine(completeLevel());
        }
+
+       if (GeneratoreDungeon.instance.collectableSpawned != null)
+        {
+            MarkCollectableAsFound(GeneratoreDungeon.instance.collectableSpawned.name);
+        }
+
        // healthText.text = "Health: " +  health;
          
     }
 
+    private void MarkCollectableAsFound(string collectableName)
+{
+    UserData userData = GeneratoreDungeon.instance.userData;
+
+    DatabaseReference databaseReference = GeneratoreDungeon.instance.databaseReference;
+
+    FirebaseUser currentUser = GeneratoreDungeon.instance.currentUser;
+
+
+    // Check if the userData and collectables are initialized
+    if (userData == null || userData.collectables == null)
+    {
+        Debug.Log("UserData or collectables data is not initialized.");
+        return;
+    }
+
+    // Get the list of collectables based on the current difficulty
+    List<CollectableItem> selectedCollectablesList = userData.collectables.collectablesByDifficulty[userData.difficulty];
+
+    // Find the collectable by name and mark it as found
+    foreach (var collectable in selectedCollectablesList)
+    {
+        if (collectable.name == collectableName)
+        {
+            collectable.isFound = true;
+            Debug.Log($"Collectable '{collectableName}' marked as found.");
+            break;
+        }
+    }
+
     
+
+    // Update the collectables in Firebase
+    string collectablesJson = JsonUtility.ToJson(userData.collectables);
+    databaseReference.Child($"users/{currentUser.UserId}/collectables").SetRawJsonValueAsync(collectablesJson);
+
+    Debug.Log("Updated collectables data in Firebase.");
+}
+
 
     public static void DamagePlayer(int damage) {
     
         if(health > 0){
             health -= damage;
-            AudioManager.instance.PlaySfx("Damage");
             player.anim.SetTrigger("hurtTrigger");
         }
         
         if(health == 0 && !morto){
-            AudioManager.instance.PlaySfx("GameOver");
             KillPlayer();
         
         }   
@@ -91,7 +138,7 @@ public class GameController : MonoBehaviour
 
      public static void riparti(){
         
-       // SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+       SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
 

@@ -4,9 +4,9 @@ public class LogoAnimator : MonoBehaviour
 {
     [Header("Logo Animation Settings")]
     public GameObject logo;  // The logo GameObject
-
     private Animator logoAnimator;
 
+    public bool isAnimated;
     void Start()
     {
         logoAnimator = logo.GetComponent<Animator>();
@@ -19,7 +19,9 @@ public class LogoAnimator : MonoBehaviour
     {
         if (logoAnimator != null)
         {
-            logoAnimator.Play("LogoAnimation"); // The name should match your animation
+            logoAnimator.SetBool("Animate", true);
+            isAnimated = true;
+
         }
 
         // Notify that the logo animation is complete

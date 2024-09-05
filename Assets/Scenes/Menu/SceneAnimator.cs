@@ -9,7 +9,7 @@ public class SceneAnimator : MonoBehaviour
     public BackgroundManager backgroundManager;
 
     [Header("Logo Animation")]
-  //  public LogoAnimator logoAnimator;
+    public LogoAnimator logoAnimator;
 
     [Header("UI Transition")]
     public UITransition uiTransition;
@@ -37,10 +37,16 @@ public class SceneAnimator : MonoBehaviour
         yield return StartCoroutine(backgroundManager.CrossfadeBackgrounds());
 
         // Step 2: Animate the logo
-    //    logoAnimator.PlayLogoAnimation();
+        if(logoAnimator != null){
+            logoAnimator.PlayLogoAnimation();
+            uiTransition.hasBeenAnimated = 1;
+
 
         // Step 3: Fade in the UI elements
-        yield return StartCoroutine(uiTransition.FadeInUIElements(0f));
+        yield return StartCoroutine(uiTransition.FadeInUIElements(1f));
+        } else { yield return StartCoroutine(uiTransition.FadeInUIElements(0f));}
+
+        
     }
 
     public void OnBackgroundTransitionComplete()
@@ -56,5 +62,10 @@ public class SceneAnimator : MonoBehaviour
      public void LoadGame()
     {
         SceneManager.LoadScene(1);
+    }
+
+     public void LoadCanti()
+    {
+        SceneManager.LoadScene(5);
     }
 }
