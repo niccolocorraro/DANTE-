@@ -1,23 +1,29 @@
 using UnityEngine;
 using Firebase.Auth;
 using Firebase.Database;
-using System.Collections;
 using System.Collections.Generic;
 
 public class DifficultySelector : MonoBehaviour
 {
+
+    public static DifficultySelector instance;
     public DungeonGenerationData easyDifficultyData;
     public DungeonGenerationData mediumDifficultyData;
     public DungeonGenerationData hardDifficultyData;
 
     private DatabaseReference databaseReference;
     private FirebaseUser currentUser;
-    public UserData userData;  // Reference to UserData instance
 
-    public DungeonGenerationData defaultDiff;
+     public DungeonGenerationData defaultDiff;
 
     public DungeonGenerationData dungeonData;
+    public UserData userData;  // Reference to UserData instance
 
+
+    void Awake()
+    {
+        instance = this;
+    }
     private void Start()
     {
         currentUser = FirebaseAuth.DefaultInstance.CurrentUser;
@@ -52,44 +58,25 @@ public class DifficultySelector : MonoBehaviour
     {
         if (currentUser != null)
         {
-            Debug.Log(userData.ToString());
-
-            // Ensure userData is initialized
             if (userData == null)
             {
                 Debug.Log("UserData is not initialized.");
                 return;
             }
 
-            // Ensure collectables inside userData is initialized
-            if (userData.collectables == null)
-            {
-                Debug.Log("Collectables data is not initialized.");
-                return;
-            }
-
             string userId = currentUser.UserId;
 
-            // Update the local UserData instance
+            // Aggiorna il livello di difficoltà e i dati del dungeon
             userData.dungeonGenerationData = selectedData;
-
-            // Update the difficulty level in userData
             userData.difficulty = (int)difficultyLevel;
 
-            // Debug logs to confirm data is being set
-            Debug.Log($"Set difficulty to {difficultyLevel} for user {userId}");
-
-            // Convert the updated UserData fields to JSON
+            // Serializza i dati per Firebase
             string dungeonJson = JsonUtility.ToJson(userData.dungeonGenerationData);
-            string collectablesJson = JsonUtility.ToJson(userData.collectables);
-            string difficultyJson = userData.difficulty.ToString(); // Convert difficulty to string for Firebase
+            string difficultyJson = userData.difficulty.ToString();  // Converti la difficoltà in stringa
 
-
-            // Update the database with the new difficulty and collectables
+            // Aggiorna il database Firebase
             databaseReference.Child($"users/{userId}/dungeonGenerationData").SetRawJsonValueAsync(dungeonJson);
-            databaseReference.Child($"users/{userId}/collectables").SetRawJsonValueAsync(collectablesJson);
-            databaseReference.Child($"users/{userId}/difficulty").SetRawJsonValueAsync(difficultyJson); // Update difficulty in Firebase
-
+            databaseReference.Child($"users/{userId}/difficulty").SetRawJsonValueAsync(difficultyJson);
         }
         else
         {
@@ -101,7 +88,7 @@ public class DifficultySelector : MonoBehaviour
     {
         DatabaseReference userRef = databaseReference.Child($"users/{userId}");
 
-        userRef.GetValueAsync().ContinueWith(task => 
+        userRef.GetValueAsync().ContinueWith(task =>
         {
             if (task.IsFaulted)
             {
@@ -113,21 +100,27 @@ public class DifficultySelector : MonoBehaviour
 
             if (snapshot.Exists)
             {
-                // Load collectables data if it exists
+                // Carica i dati dei collezionabili, se esistono
                 if (snapshot.Child("collectables").Exists)
                 {
                     string collectablesJson = snapshot.Child("collectables").GetRawJsonValue();
-                    Debug.Log(collectablesJson);
-                    userData.collectables = JsonUtility.FromJson<CollectablesData>(collectablesJson);   
-                    Debug.Log("Loaded collectablesData for the user.");
+
+                    // Modifica: deserializza nel nuovo formato `CollectableData`
+                    userData.collectables = JsonUtility.FromJson<CollectableData>(collectablesJson);
+
+                    if (userData.collectables != null && userData.collectables.list != null)
+                    {
+                        Debug.Log("Loaded collectables data for the user.");
+                    }
+                    else
+                    {
+                        Debug.Log("Collectables data does not exist, initializing with default values.");
+                        userData.collectables = new CollectableData(); // Inizializza con i dati di default
+                    }
                 }
-                else
-                {
-                    Debug.Log("collectablesData does not exist for this user, initializing with default values.");
-                    userData.collectables = new CollectablesData();
-                }
-                // Load dungeonGenerationData if it exists
-                if (snapshot.Child("dungeonGenerationData").Exists)
+
+                // Carica i dati del dungeon, se esistono
+                  if (snapshot.Child("dungeonGenerationData").Exists)
                 {
                     string dungeonJson = snapshot.Child("dungeonGenerationData").GetRawJsonValue();
                     Debug.Log(dungeonJson);
@@ -141,8 +134,7 @@ public class DifficultySelector : MonoBehaviour
                 {
                     Debug.Log("dungeonGenerationData does not exist for this user, using default data.");
                 }
-
-                // Load difficulty if it exists
+                // Carica il livello di difficoltà, se esiste
                 if (snapshot.Child("difficulty").Exists)
                 {
                     userData.difficulty = int.Parse(snapshot.Child("difficulty").Value.ToString());
@@ -152,11 +144,17 @@ public class DifficultySelector : MonoBehaviour
                     Debug.Log("Difficulty level does not exist for this user, setting to default.");
                     userData.difficulty = 0;  // Default to Easy
                 }
-
             }
             else
             {
                 Debug.LogWarning("No data exists for this user in the database.");
+                // Inizializza i dati di default
+                userData = new UserData
+                {
+                    collectables = new CollectableData(), // Inizializza collezionabili di default
+                    dungeonGenerationData = new DungeonGenerationData(), // Inizializza dati del dungeon
+                    difficulty = 0 // Difficoltà di default
+                };
             }
         });
     }
@@ -164,7 +162,7 @@ public class DifficultySelector : MonoBehaviour
     private enum DifficultyLevel
     {
         Easy = 0,
-        Medium = 1,
-        Hard = 2
+        Medium = 11,
+        Hard = 22
     }
 }

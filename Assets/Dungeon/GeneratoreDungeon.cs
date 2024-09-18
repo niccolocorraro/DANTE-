@@ -19,6 +19,8 @@ public class GeneratoreDungeon : MonoBehaviour
     public GameObject chiavePrefab;
     public GameObject cantoPrefab;
 
+    public string nomeCanto;
+
     public CollectableItem collectableSpawned;
 
     private List<Vector2Int> stanzeDungeon;
@@ -53,7 +55,7 @@ public class GeneratoreDungeon : MonoBehaviour
         await StartDungeonGeneration(userData.dungeonGenerationData);
     }
 
-    private async Task LoadUserData(string userId)
+   private async Task LoadUserData(string userId)
 {
     DatabaseReference userRef = databaseReference.Child($"users/{userId}");
 
@@ -68,54 +70,65 @@ public class GeneratoreDungeon : MonoBehaviour
     });
 
     if (snapshot != null && snapshot.Exists)
-    {
-        // Load collectables data if it exists
-        if (snapshot.Child("collectables").Exists)
-        {
-            string collectablesJson = snapshot.Child("collectables").GetRawJsonValue();
-            Debug.Log(collectablesJson);
-            userData.collectables = JsonUtility.FromJson<CollectablesData>(collectablesJson);
-            Debug.Log("Loaded collectablesData for the user.");
-        }
-        else
-        {
-            Debug.Log("collectablesData does not exist for this user, initializing with default values.");
-            userData.collectables = new CollectablesData();
-        }
+            {
+                // Carica i dati dei collezionabili, se esistono
+                if (snapshot.Child("collectables").Exists)
+                {
+                    string collectablesJson = snapshot.Child("collectables").GetRawJsonValue();
 
-        // Load dungeonGenerationData if it exists
-        if (snapshot.Child("dungeonGenerationData").Exists)
-        {
-            string dungeonJson = snapshot.Child("dungeonGenerationData").GetRawJsonValue();
-            Debug.Log(dungeonJson);
+                    // Modifica: deserializza nel nuovo formato `CollectableData`
+                    userData.collectables = JsonUtility.FromJson<CollectableData>(collectablesJson);
 
-            JsonUtility.FromJsonOverwrite(dungeonJson, dungeonData);
-            userData.dungeonGenerationData = dungeonData;
-            Debug.Log(userData.dungeonGenerationData.ToString());
-            Debug.Log("Loaded dungeonGenerationData for the user.");
-        }
-        else
-        {
-            Debug.Log("dungeonGenerationData does not exist for this user, using default data.");
-        }
+                    if (userData.collectables != null && userData.collectables.list != null)
+                    {
+                        Debug.Log("Loaded collectables data for the user.");
+                    }
+                    else
+                    {
+                        Debug.Log("Collectables data does not exist, initializing with default values.");
+                        userData.collectables = new CollectableData(); // Inizializza con i dati di default
+                    }
+                }
 
-        // Load difficulty if it exists
-        if (snapshot.Child("difficulty").Exists)
-        {
-            userData.difficulty = int.Parse(snapshot.Child("difficulty").Value.ToString());
-        }
-        else
-        {
-            Debug.Log("Difficulty level does not exist for this user, setting to default.");
-            userData.difficulty = 0;  // Default to Easy
-        }
-    }
-    else
-    {
-        Debug.LogWarning("No data exists for this user in the database.");
-    }
+                // Carica i dati del dungeon, se esistono
+                  if (snapshot.Child("dungeonGenerationData").Exists)
+                {
+                    string dungeonJson = snapshot.Child("dungeonGenerationData").GetRawJsonValue();
+                    Debug.Log(dungeonJson);
+
+                    JsonUtility.FromJsonOverwrite(dungeonJson, dungeonData);
+                    userData.dungeonGenerationData = dungeonData;
+                    Debug.Log(userData.dungeonGenerationData.ToString());
+                    Debug.Log("Loaded dungeonGenerationData for the user.");
+                }
+                else
+                {
+                    Debug.Log("dungeonGenerationData does not exist for this user, using default data.");
+                }
+
+                // Carica il livello di difficoltà, se esiste
+                if (snapshot.Child("difficulty").Exists)
+                {
+                    userData.difficulty = int.Parse(snapshot.Child("difficulty").Value.ToString());
+                }
+                else
+                {
+                    Debug.Log("Difficulty level does not exist for this user, setting to default.");
+                    userData.difficulty = 0;  // Default to Easy
+                }
+            }
+            else
+            {
+                Debug.LogWarning("No data exists for this user in the database.");
+                // Inizializza i dati di default
+                userData = new UserData
+                {
+                    collectables = new CollectableData(), // Inizializza collezionabili di default
+                    dungeonGenerationData = new DungeonGenerationData(), // Inizializza dati del dungeon
+                    difficulty = 0 // Difficoltà di default
+                };
+            }
 }
-
 
     private async Task StartDungeonGeneration(DungeonGenerationData dungeonGenerationData)
     {
@@ -169,27 +182,31 @@ public class GeneratoreDungeon : MonoBehaviour
     private async Task spawnCollectableItem()
 {
     // Get the correct collectables list based on the selected difficulty
-    List<CollectableItem> selectedCollectablesList = userData.collectables.collectablesByDifficulty[userData.difficulty];
+    List<CollectableItem> selectedCollectablesList = userData.collectables.list;
 
     CollectableItem collectableSpawned = null;
 
+    Debug.Log(userData.collectables.ToString());
+
     // Iterate over the selected collectables list to find an item that hasn't been found yet
-    foreach (var item in selectedCollectablesList)
+    for (int i = userData.difficulty ; i<= userData.difficulty+9; i++)
     {
-        if (!item.isFound)
+        if (!selectedCollectablesList[i].isFound)
         {
-            collectableSpawned = item;
+            collectableSpawned = selectedCollectablesList[i];
+            Debug.Log(selectedCollectablesList[i].name);
+            nomeCanto = selectedCollectablesList[i].name;
             break;
+
         }
     }
+    
 
     if (collectableSpawned != null && stanzeDungeon.Count >= 5)
     {
         // Spawn the collectable in a random room
-        await Task.Delay(500);
-        Debug.Log(stanzeDungeon.Count);
-        Vector3 spawnPosition = GetRandomPositionInRoom(GestoreStanze.instance.stanzeCaricate[Random.Range(3, stanzeDungeon.Count - 2)]);
-        Instantiate(cantoPrefab, spawnPosition, Quaternion.identity);
+    
+        Instantiate(cantoPrefab, GestoreStanze.instance.stanzeCaricate[Random.Range(4, GestoreStanze.instance.stanzeCaricate.Count() - 3)].GetStanzaCentro(), Quaternion.identity);
     }
 
     await Task.Yield(); // Wait for the next frame to continue
@@ -230,4 +247,6 @@ public class GeneratoreDungeon : MonoBehaviour
         float y = Random.Range(bounds.yMin, bounds.yMax);
         return new Vector3(x, y, 0);
     }
+
+    
 }

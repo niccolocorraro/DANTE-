@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "507177932036",
+    "firebase_url": "https://dante-s-inferno-9f49a-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "dante-s-inferno-9f49a",
+    "storage_bucket": "dante-s-inferno-9f49a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:507177932036:android:2055523d73cff9061e2c51",
+        "android_client_info": {
+          "package_name": "it.uniroma3.mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD71K7mVej5BkIP6wPo_UB9ITVyDz128fg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

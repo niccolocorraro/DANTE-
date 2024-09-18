@@ -2,13 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
+
 
 public class Player : MonoBehaviour {
     public float speed;
     public Rigidbody2D rigidbody;
-    private Vector2 direzioneMossa;
+    public Vector2 direzioneMossa;
     public Animator anim;
     private SpriteRenderer sprite;
+
+    private InputM inputs;
 
     // Start is called before the first frame update
     void Start()
@@ -16,15 +20,14 @@ public class Player : MonoBehaviour {
         rigidbody = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
+
+        inputs = GetComponent<InputM>();  // Assicurati che il nuovo sistema di input sia usato
     }
 
     void InputProc()
     {
-        float orizzontale = Input.GetAxisRaw("Horizontal");
-        float verticale = Input.GetAxisRaw("Vertical");
-
-        direzioneMossa = new Vector2(orizzontale, verticale).normalized;
-
+        // Usa il nuovo sistema di input (InputM)
+        direzioneMossa = inputs.MoveInput.normalized;  // Assegna il movimento con il nuovo input system
         UpdateAnimationUpdate();
     }
 

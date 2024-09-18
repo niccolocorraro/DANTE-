@@ -113,8 +113,10 @@ public class AuthManager : MonoBehaviour
     {
         UserData userData = new UserData
         {
-            collectables = new CollectablesData(),
+            collectables = new CollectableData(),
             dungeonGenerationData = difficultyData,
+            difficulty = 0 //0=primo
+
         };
 
         databaseRef.Child("users").Child(userId).SetRawJsonValueAsync(JsonUtility.ToJson(userData)).ContinueWithOnMainThread(task =>
