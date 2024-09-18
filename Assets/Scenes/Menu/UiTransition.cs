@@ -119,4 +119,5 @@ public class UITransition : MonoBehaviour
         element.interactable = false;
         element.blocksRaycasts = false;
     }
+
 }

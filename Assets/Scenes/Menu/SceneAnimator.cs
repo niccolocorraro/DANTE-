@@ -61,11 +61,8 @@ public class SceneAnimator : MonoBehaviour
 
      public void LoadGame()
     {
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(2);
     }
 
-     public void LoadCanti()
-    {
-        SceneManager.LoadScene(5);
-    }
+     
 }
