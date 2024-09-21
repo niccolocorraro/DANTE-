@@ -141,7 +141,6 @@ PlayerSettings:
   tvOSBundleVersion: 1.0
   bundleVersion: 1.0.2
   preloadedAssets:
-  - {fileID: -2387556016158326704, guid: ac42c8bca7800e943998319b4e435003, type: 2}
   - {fileID: 11400000, guid: b8bc80e302f5fa34d82801a20ac2a9ed, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
@@ -188,7 +187,7 @@ PlayerSettings:
   strictShaderVariantMatching: 0
   VertexChannelCompressionMask: 4054
   iPhoneSdkVersion: 988
-  iOSTargetOSVersionString: 12.0
+  iOSTargetOSVersionString: 13.0
   tvOSSdkVersion: 0
   tvOSRequireExtendedGameController: 0
   tvOSTargetOSVersionString: 12.0
