@@ -5,6 +5,7 @@ Matricole:
 Corraro 578693
 Fontanesi 578366
 
-i seguenti pacchetti non sono stati aggiunti per problemi di archiviazione di gitHub : 
+I seguenti pacchetti non sono stati aggiunti per problemi di archiviazione di gitHub : 
 FirebaseAuth.unitypackage
 FirebaseDatabase.unitypackage
+; scaricabili da questo link : https://firebase.google.com/download/unity
